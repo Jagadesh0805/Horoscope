@@ -2,7 +2,6 @@ import telebot
 import requests
 import dbworker
 import pickle
-import markups as markup
 from bs4 import BeautifulSoup
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
 
