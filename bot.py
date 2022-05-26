@@ -1,6 +1,5 @@
 import telebot
 import requests
-import dbworker
 import pickle
 from bs4 import BeautifulSoup
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
@@ -56,11 +55,6 @@ my_dict =  {"Aries":1,
 
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
-    result = dbworker.check_user_exist(message.chat.id)
-    if result is True:
-        msg = "Why u /start agn for? hahahaha LMAO"
-        bot.send_message(message.chat.id, text = msg)
-    else:
         msg = """Hi! Before we start, I would like you to choose your zodiac sign. Press the below buttons to choose your zodiac sign!\n\nI am a..."""
         bot.send_message(message.chat.id, text = msg, reply_markup=markup.initialization())
 
@@ -79,7 +73,6 @@ def cmd_help(message):
 @bot.message_handler(commands=["today"])
 def web_scrap_today(message):
     try:
-        horoscope = dbworker.get_horoscope(message.chat.id)
         sign = my_dict[horoscope]
         url = "https://www.horoscope.com/us/horoscopes/general/horoscope-general-daily-today.aspx?sign={}".format(sign)
         r = requests.get(url)
@@ -94,17 +87,6 @@ def web_scrap_today(message):
 @bot.message_handler(commands=["tomorrow"])
 def web_scrap_tomorrow(message):
     bot.send_message(message.chat.id, text="This command is not available yet.")
-
-@bot.message_handler(commands=["subscribe"])
-def subscribe(message):
-    messageobj = pickle.dumps(message, pickle.HIGHEST_PROTOCOL)
-    dbworker.add_to_subscribers(message.chat.id, messageobj)
-    bot.send_message(message.chat.id, text="Amazing! You have subscribed to our daily notifications.")
-
-@bot.message_handler(commands=["unsubscribe"])
-def unsubscribe(message):
-    dbworker.remove_subscriber(message.chat.id)
-    bot.send_message(message.chat.id, text="Goodbye😭😭..You have unsubscribed to our daily notifications.")
 
 @bot.message_handler(commands=["settings"])
 def settings(message):
